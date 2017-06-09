@@ -11,106 +11,15 @@
   pre_tasks:
   - name: 'install python2'
     raw: sudo apt-get -y install python-simplejson
-    when: skip_install is not defined
+    when: not skip_install
   tasks:
-  - name: Update apt cache
-    apt: update_cache=yes cache_valid_time={{ apt_cache_valid_time }}
-    when: skip_install is not defined
+  - name: include installation tasks
+    include: tasks/install.yaml
+    when: not skip_install
 
-  # Java
-  - name: Add Oracle Java Repository
-    apt_repository: repo='ppa:webupd8team/java' update_cache=yes
-    when: skip_install is not defined
-  - name: Accept Java 8 License
-    when: skip_install is not defined
-    debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
-  - name: Install Oracle Java 8
-    apt: name={{item}} state=latest
-    with_items:
-      - oracle-java8-installer
-      - ca-certificates
-      - oracle-java8-set-default
-    when: skip_install is not defined
-
-  # Add Elastic stack repositories
-  - name: add Elastic key
-    apt_key: url=https://artifacts.elastic.co/GPG-KEY-elasticsearch state=present
-    when: skip_install is not defined
-  - name: install necessary packages to get elastic stack
-    apt: name={{item}} state=present
-    with_items:
-      - aptitude
-      - apt-transport-https
-    when: skip_install is not defined
-  - name: install elasticsearch repository
-    apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present update_cache=yes
-    when: skip_install is not defined
-
-
-  # Install and configure Elasticsearch
-  - name: install elasticsearch
-    apt: name=elasticsearch state=present
-    register: installed_elasticsearch
-    when: skip_install is not defined
-  - name: Enable elasticsearch service
-    service: name=elasticsearch enabled=yes
-    when: installed_elasticsearch.changed
-  - name: Put elasticsearch configuration
-    copy:
-      src: files/etc/elasticsearch/{{item}}
-      dest: /etc/elasticsearch/{{item}}
-      owner: root
-      group: elasticsearch
-    with_items:
-      - elasticsearch.yml
-      - jvm.options
-    register: configured_elasticsearch
-  - name: Restart elasticsearch
-    service: name=elasticsearch state=restarted
-    when: configured_elasticsearch.changed or installed_elasticsearch.changed
-
-  # Install and configure logstash
-  - name: install logstash
-    apt: name=logstash state=present
-    when: skip_install is not defined
-    register: installed_logstash
-  - name: Enable logstash service
-    service: name=logstash enabled=yes
-    when: installed_logstash.changed
-  - name: Put logstash process configuration
-    copy:
-      src: files/etc/logstash/{{item}}
-      dest: /etc/logstash/{{item}}
-      owner: root
-      group: root
-    with_items:
-      - logstash.yml
-      - jvm.options
-    register: configured_logstash
-  - name: Restart logstash
-    service: name=logstash state=restarted
-    when: configured_logstash.changed or installed_logstash.changed
-
-
-  # Install and configure kibana
-  - name: install kibana
-    apt: name=kibana state=present
-    register: installed_kibana
-    when: skip_install is not defined
-  - name: Enable kibana service
-    service: name=kibana enabled=yes
-    when: installed_kibana.changed
-  - name: Put kibana configuration
-    copy:
-      src: files/etc/kibana/{{item}}
-      dest: /etc/kibana/{{item}}
-      owner: root
-      group: root
-    with_items:
-      - kibana.yml
-    register: configured_kibana
-  - name: Restart kibana
-    service: name=kibana state=restarted
-    when: configured_kibana.changed or installed_kibana.changed
-
-
+  - name: include configuration tasks
+    include: tasks/configure.yaml
+  
+  - name: include services
+    include: tasks/install.yaml
+    when: not skip_install

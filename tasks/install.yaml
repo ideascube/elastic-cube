@@ -1,0 +1,36 @@
+- name: Update apt cache
+  apt: update_cache=yes cache_valid_time={{ apt_cache_valid_time }}
+  
+  # Java
+- name: Add Oracle Java Repository
+  apt_repository: repo='ppa:webupd8team/java' update_cache=yes
+- name: Accept Java 8 License
+  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
+- name: Install Oracle Java 8
+  apt: name={{item}} state=latest
+  with_items:
+    - oracle-java8-installer
+    - ca-certificates
+    - oracle-java8-set-default
+
+# Add Elastic stack repositories
+- name: add Elastic key
+  apt_key: url=https://artifacts.elastic.co/GPG-KEY-elasticsearch state=present
+- name: install necessary packages to get elastic stack
+  apt: name={{item}} state=present
+  with_items:
+    - aptitude
+    - apt-transport-https
+- name: install elasticsearch repository
+  apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present update_cache=yes
+  
+# Install elastic stack components  
+- name: install elasticsearch
+  apt: name=elasticsearch state=present
+  register: installed_elasticsearch
+- name: install logstash
+  apt: name=logstash state=present
+  register: installed_logstash
+- name: install kibana
+  apt: name=kibana state=present
+  register: installed_kibana

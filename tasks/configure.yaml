@@ -1,0 +1,36 @@
+# Configure Elasticsearch
+- name: Put elasticsearch configuration
+  copy:
+    src: files/etc/elasticsearch/{{item}}
+    dest: /etc/elasticsearch/{{item}}
+    owner: root
+    group: elasticsearch
+  with_items:
+    - elasticsearch.yml
+    - jvm.options
+  register: configured_elasticsearch
+
+# Configure logstash
+- name: Put logstash process configuration
+  copy:
+    src: files/etc/logstash/{{item}}
+    dest: /etc/logstash/{{item}}
+    owner: root
+    group: root
+  with_items:
+    - logstash.yml
+    - jvm.options
+  register: configured_logstash
+
+
+# configure kibana
+- name: Put kibana configuration
+  copy:
+    src: files/etc/kibana/{{item}}
+    dest: /etc/kibana/{{item}}
+    owner: root
+    group: root
+  with_items:
+    - kibana.yml
+  register: configured_kibana
+

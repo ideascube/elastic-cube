@@ -1,0 +1,18 @@
+- name: Enable elastic stack services
+  service: name={{item}} enabled=yes
+  with_items:
+  - elasticsearch
+  - logstash
+  - kibana
+
+- name: Restart elasticsearch
+  service: name=elasticsearch state=restarted
+  when: configured_elasticsearch.changed or installed_elasticsearch.changed
+
+- name: Restart logstash
+  service: name=logstash state=restarted
+  when: configured_logstash.changed or installed_logstash.changed
+
+- name: Restart kibana
+  service: name=kibana state=restarted
+  when: configured_kibana.changed or installed_kibana.changed
