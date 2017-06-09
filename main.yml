@@ -17,7 +17,7 @@
 
   # Java
   - name: Add Oracle Java Repository
-    apt_repository: repo='ppa:webupd8team/java' update_cache=yes
+    apt_repository: repo='ppa:webupd8team/java' update_cache=yes codename=jessie
     when: first_run
   - name: Accept Java 8 License
     when: first_run
