@@ -30,7 +30,7 @@
       - oracle-java8-set-default
     when: first_run
 
-  # Elastic stack
+  # Add Elastic stack repositories
   - name: add Elastic key
     apt_key: url=https://artifacts.elastic.co/GPG-KEY-elasticsearch state=present
   - name: install necessary packages to get elastic stack
@@ -41,17 +41,14 @@
   - name: install elasticsearch repository
     apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present update_cache=yes
 
-    # Need to remove the allow_unauthentication, but currently this fails with
-    # Install these packages without verification? [y/N]
-  - name: install packages
-    apt: name={{item}} state=present
-    #allow_unauthenticated=yes
-    with_items:
-      - logstash
-      - kibana
-      - elasticsearch
 
-  # Configure Elasticsearch
+  # Install and configure Elasticsearch
+  - name: install elasticsearch
+    apt: name=elasticsearch state=present
+    register: installed_elasticsearch
+  - name: Enable elasticsearch service services
+    service: name=elasticsearch enabled=yes
+    when: installed_elasticsearch
   - name: Put elasticsearch configuration
     copy:
       src: files/etc/elasticsearch/{{item}}
@@ -61,8 +58,18 @@
     with_items:
       - elasticsearch.yml
       - jvm.options
+    register: configured_elasticsearch
+  - name: Restart elasticsearch
+    service: name=elasticsearch state=restarted
+    when: configured_elasticsearch.changed or installed_elasticsearch.changed
 
-  # Configure logstash
+  # Install and configure logstash
+  - name: install logstash
+    apt: name=logstash state=present
+    register: installed_logstash
+  - name: Enable logstash service services
+    service: name=logstash enabled=yes
+    when: installed_logstash
   - name: Put logstash configuration
     copy:
       src: files/etc/logstash/{{item}}
@@ -72,3 +79,32 @@
     with_items:
       - logstash.yml
       - jvm.options
+    register: configured_logstash
+#  - debug: msg="configured_logstash={{configured_logstash}}"
+#  - debug: msg="installed_logstash={{installed_logstash}}"
+  - name: Restart logstash
+    service: name=logstash state=restarted
+    when: configured_logstash.changed or installed_logstash.changed
+
+
+  # Install and configure kibana
+  - name: install kibana
+    apt: name=kibana state=present
+    register: installed_kibana
+  - name: Enable kibana service services
+    service: name=kibana enabled=yes
+    when: installed_kibana
+  - name: Put kibana configuration
+    copy:
+      src: files/etc/kibana/{{item}}
+      dest: /etc/kibana/{{item}}
+      owner: root
+      group: root
+    with_items:
+      - kibana.yml
+    register: configured_kibana
+  - name: Restart kibana
+    service: name=kibana state=restarted
+    when: configured_kibana.changed or installed_kibana.changed
+
+
