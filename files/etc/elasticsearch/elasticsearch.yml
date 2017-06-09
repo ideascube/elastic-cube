@@ -1,0 +1,7 @@
+cluster.name: elastic-cube
+node.name: node-1
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+bootstrap.memory_lock: true
+network.host: localhost
+http.port: 9200

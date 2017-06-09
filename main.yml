@@ -3,6 +3,7 @@
   become: true
   become_user: root
   roles:
+  gather_facts: False
   vars:
     first_run: false
     apt_cache_valid_time: 86400
@@ -14,17 +15,12 @@
   - name: Update apt cache
     apt: update_cache=yes cache_valid_time={{ apt_cache_valid_time }}
 
-
-  - name: Check Java
-    shell: command -v java
-    register: java_installed
-    ignore_errors: True
-    changed_when: False
+  # Java
   - name: Add Oracle Java Repository
     apt_repository: repo='ppa:webupd8team/java' update_cache=yes
-    when: not java_installed
+    when: first_run
   - name: Accept Java 8 License
-    when: not java_installed
+    when: first_run
     debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
   - name: Install Oracle Java 8
     apt: name={{item}} state=latest
@@ -32,8 +28,9 @@
       - oracle-java8-installer
       - ca-certificates
       - oracle-java8-set-default
-    when: not java_installed
+    when: first_run
 
+  # Elastic stack
   - name: add Elastic key
     apt_key: url=https://artifacts.elastic.co/GPG-KEY-elasticsearch state=present
   - name: install necessary packages to get elastic stack
@@ -47,9 +44,31 @@
     # Need to remove the allow_unauthentication, but currently this fails with
     # Install these packages without verification? [y/N]
   - name: install packages
-    apt: name={{item}} state=present allow_unauthenticated=yes
+    apt: name={{item}} state=present
+    #allow_unauthenticated=yes
     with_items:
       - logstash
       - kibana
       - elasticsearch
 
+  # Configure Elasticsearch
+  - name: Put elasticsearch configuration
+    copy:
+      src: files/etc/elasticsearch/{{item}}
+      dest: /etc/elasticsearch/{{item}}
+      owner: root
+      group: elasticsearch
+    with_items:
+      - elasticsearch.yml
+      - jvm.options
+
+  # Configure logstash
+  - name: Put logstash configuration
+    copy:
+      src: files/etc/logstash/{{item}}
+      dest: /etc/logstash/{{item}}
+      owner: root
+      group: root
+    with_items:
+      - logstash.yml
+      - jvm.options
