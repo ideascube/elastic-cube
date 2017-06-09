@@ -20,6 +20,7 @@
   - name: include configuration tasks
     include: tasks/configure.yaml
   
+  - debug: msg="configured_logstash"
   - name: include services
-    include: tasks/install.yaml
+    include: tasks/services.yaml
     when: not skip_install

@@ -12,15 +12,16 @@
 
 # Configure logstash
 - name: Put logstash process configuration
-  copy:
-    src: files/etc/logstash/{{item}}
-    dest: /etc/logstash/{{item}}
+  synchronize:
+    src: files/etc/logstash/
+    dest: /etc/logstash
+  register: configured_logstash
+- name: chown for logstash
+  file:
+    path: /etc/logstash
+    recurse: yes
     owner: root
     group: root
-  with_items:
-    - logstash.yml
-    - jvm.options
-  register: configured_logstash
 
 
 # configure kibana
