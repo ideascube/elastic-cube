@@ -1,8 +1,11 @@
 #------------------------------ Prospectors -----------------------------------
 filebeat.prospectors:
-- input_type: log
+- input_type: nginx
   paths:
     - /var/log/*.log
+  fields:
+    type: nginx
+  fields_under_root: true
 
 #----------------------------- Logstash output --------------------------------
 output.logstash:
