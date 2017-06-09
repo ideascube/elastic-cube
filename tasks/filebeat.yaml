@@ -1,0 +1,28 @@
+# Add Elastic stack repositories
+- name: add Elastic key
+  apt_key: url=https://artifacts.elastic.co/GPG-KEY-elasticsearch state=present
+
+# Make sure some necessary packages are already installed
+- name: install necessary packages to get elastic stack
+  apt: name={{item}} state=present
+  with_items:
+    - aptitude
+    - apt-transport-https
+
+# Install the repo and then filebeat
+- name: install elasticsearch repository
+  apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present update_cache=yes
+- name: install filebeat
+  apt: name=filebeat state=present
+- name: Enable filebeat service
+  service: name=filebeat enabled=yes
+
+# Copy the configuration
+- name: copy filebeat configuration
+  copy:
+    src: files/etc/filebeat/{{item}}
+    dest: /etc/filebeat/{{item}}
+    owner: root
+    group: elasticsearch
+  with_items:
+    - filebeat.yml

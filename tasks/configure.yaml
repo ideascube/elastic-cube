@@ -23,7 +23,6 @@
     owner: root
     group: root
 
-
 # configure kibana
 - name: Put kibana configuration
   copy:

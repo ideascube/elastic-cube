@@ -1,0 +1,15 @@
+- name: Install filebeat on the central server
+  hosts: test
+  become: true
+  become_user: root
+  roles:
+  gather_facts: False
+  vars:
+    apt_cache_valid_time: 86400
+    # This can be overridden on the command line with --extra-vars "skip_install=true" for a faster run
+    skip_install: false
+  tasks:
+  - name: include installation tasks
+    include: tasks/filebeat.yaml
+    when: not skip_install
+

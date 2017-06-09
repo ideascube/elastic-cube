@@ -1,0 +1,10 @@
+#------------------------------ Prospectors -----------------------------------
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - /var/log/*.log
+
+#----------------------------- Logstash output --------------------------------
+output.logstash:
+  hosts: ["localhost:5044"]
+
