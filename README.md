@@ -13,13 +13,13 @@ Ansible playbook for ELK installation on Jessie.
 + First time installation :
 
 ```
-        chmod +x run
-	./run
+        chmod +x run.sh
+	./run.sh
 
 ```
 
 + If in need to rerun playbook without packages installation :
 ```
-        ./run --extra-vars "skip_install=true"
+        ./run.sh --extra-vars "skip_install=true"
 
 ```
