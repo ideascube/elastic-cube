@@ -1,16 +1,16 @@
 - name: Update apt cache
   apt: update_cache=yes cache_valid_time={{ apt_cache_valid_time }}
   
-  # Java
+  # Java - ansible v2.3 needed for "codename"
 - name: Add Oracle Java Repository
-  apt_repository: repo='ppa:webupd8team/java' update_cache=yes
+  apt_repository: repo='ppa:webupd8team/java' update_cache=yes codename='xenial'
+  
 - name: Accept Java 8 License
   debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
 - name: Install Oracle Java 8
   apt: name={{item}} state=latest
   with_items:
     - oracle-java8-installer
-    - ca-certificates
     - oracle-java8-set-default
 
 # Add Elastic stack repositories
