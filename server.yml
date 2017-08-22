@@ -1,5 +1,5 @@
 - name: Install filebeat on the central server
-  hosts: test
+  hosts: filebeat
   become: true
   become_user: root
   roles:
@@ -9,6 +9,11 @@
     # This can be overridden on the command line with --extra-vars "skip_install=true" for a faster run
     skip_install: false
   tasks:
+  - name: Install must-have packages
+    apt:
+      name: ca-certificates
+      state: present
+    when: not skip_install
   - name: include installation tasks
     include: tasks/filebeat.yaml
     when: not skip_install
