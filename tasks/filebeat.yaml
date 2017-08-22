@@ -17,6 +17,11 @@
 - name: Enable filebeat service
   service: name=filebeat enabled=yes
 
+- name: add group elasticsearch if missing
+  group:
+    name: elasticsearch
+    state: present
+
 # Copy the configuration
 - name: copy filebeat configuration
   copy:
