@@ -1,6 +1,6 @@
 #------------------------------ Prospectors -----------------------------------
 filebeat.prospectors:
-- input_type: nginx
+- input_type: log
   paths:
     - /var/log/*.log
   fields:
