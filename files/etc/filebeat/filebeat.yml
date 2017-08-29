@@ -2,9 +2,10 @@
 filebeat.prospectors:
 - input_type: log
   paths:
-    - /var/log/*.log
+    - /var/log/boxes/*/access.log*
+  exclude_files: ['\.gz$']
   fields:
-    type: nginx
+    type: nginx-access
   fields_under_root: true
 
 #----------------------------- Logstash output --------------------------------
