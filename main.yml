@@ -17,6 +17,7 @@
       - ca-certificates
       - python-simplejson
       - rsync
+      - curl # very useful for debugging
     when: not skip_install
   tasks:
   - name: include installation tasks
