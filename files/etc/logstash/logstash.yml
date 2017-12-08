@@ -1,1 +1,2 @@
-path.data: /var/lib/logstash
+path.data: /usr/share/logstash
+path.config: /etc/logstash/conf.d
