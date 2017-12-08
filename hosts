@@ -1,3 +1,4 @@
 ---
 [test]
-master-data-1 ansible_host=52.211.6.216 ansible_port=22 ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/aws-rclarke-eu-west.pem
+angela ansible_host=angela.cinema.montreuil.bsf-intranet.org ansible_port=22 ansible_user=elkuser
+filebeat ansible_host=10.10.8.141 ansible_port=22 ansible_user=elkuser
