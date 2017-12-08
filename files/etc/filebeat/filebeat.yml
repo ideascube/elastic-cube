@@ -7,6 +7,21 @@ filebeat.prospectors:
   fields:
     type: nginx-access
   fields_under_root: true
+- input_type: log
+  paths:
+    - /var/log/boxes/*/error.log*
+  exclude_files: ['\.gz$']
+  fields:
+    type: nginx-error
+  fields_under_root: true
+- input_type: log
+  paths:
+    - /var/log/boxes/*/syslog*
+  exclude_files: ['\.gz$']
+  fields:
+    type: syslog
+  fields_under_root: true
+
 
 #----------------------------- Logstash output --------------------------------
 output.logstash:
