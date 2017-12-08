@@ -24,7 +24,7 @@
     group: root
 - name: Copy nginx pattern
   copy:
-    src: file/usr/logstash/nginx
+    src: files/usr/logstash/nginx
 # We need to find a way to extract the path to avoid this ugly hardcode :
     dest: /usr/share/logstash/vendor/bundle/jruby/1.9/gems/logstash-patterns-core-4.1.1/patterns/nginx 
     owner: root
