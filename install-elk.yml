@@ -1,5 +1,5 @@
 - name: Elasticsearch with custom configuration
-  hosts: master-data-1
+  hosts: angela
   become: true
   become_user: root
   roles:
