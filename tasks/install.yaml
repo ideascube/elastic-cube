@@ -22,7 +22,7 @@
     - aptitude
     - apt-transport-https
 - name: install elasticsearch repository
-  apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present update_cache=yes
+  apt_repository: repo="deb https://artifacts.elastic.co/packages/6.x/apt stable main" state=present update_cache=yes
   
 # Install elastic stack components  
 - name: install elasticsearch
