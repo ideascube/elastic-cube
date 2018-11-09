@@ -11,7 +11,7 @@
 
 # Install the repo and then filebeat
 - name: install elasticsearch repository
-  apt_repository: repo="deb https://artifacts.elastic.co/packages/5.x/apt stable main" state=present update_cache=yes
+  apt_repository: repo="deb https://artifacts.elastic.co/packages/6.x/apt stable main" state=present update_cache=yes
 - name: install filebeat
   apt: name=filebeat state=present
 - name: Enable filebeat service
